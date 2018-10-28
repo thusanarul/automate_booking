@@ -20,7 +20,7 @@ input_data.send_keys(Keys.ENTER)
 usr_name = browser.find_element_by_id("username")
 password = browser.find_element_by_id("password")
 usr_name.send_keys("piruthua")
-password.send_keys("Thusansjef1")
+password.send_keys("")
 password.send_keys(Keys.ENTER)
 
 
