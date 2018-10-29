@@ -2,7 +2,10 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from datetime import datetime
 from datetime import timedelta
-
+from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.common.by import By
 
 
 browser = webdriver.Chrome("/home/thusan/Downloads/chromedriver")
@@ -32,30 +35,55 @@ browser.execute_script(script_string, date_picker)
 start_picker = browser.find_element_by_id("start")
 start_picker.click()
 start_picker.get_attribute("value")
-start_picker.send_keys("00")
-start_picker.send_keys(Keys.ENTER)
+start_picker.send_keys("0")
+start_picker.click()
+start_time = browser.find_element_by_xpath("//option[@selected='selected']")
+start_time_value = start_time.get_attribute("value")
+assert "08:15" in start_time_value
+
 
 end_picker = browser.find_element_by_id("duration")
 end_picker.click()
 end_picker.get_attribute("value")
 end_picker.send_keys("12")
-end_picker.send_keys(Keys.ENTER)
+end_picker.click()
+end_time = browser.find_element_by_xpath("//option[@value='03:45']")
+end_time_duration = end_time.get_attribute("selected")
+assert "true" in end_time_duration
 
 area_picker = browser.find_element_by_id("area")
 area_picker.click()
 area_picker.send_keys("g")
-area_picker.send_keys(Keys.ENTER)
+area_picker.click()
 
 show_rooms = browser.find_element_by_id("preformsubmit")
 show_rooms.click()
 
 possible_rooms = browser.find_element_by_css_selector(".possible-rooms-table")
-room = browser.find_element_by_xpath('//*[@title="322255C"]')
-for row in room.find_element_by_xpath(".//td"):
-    print(row)
-print(room)
-print(browser.find_element_by_xpath('//*[@title="Velg"]').click())
-choose_button = browser.find_element_by_css_selector(".bestillchk")
-script_button = "arguments[0].setAttribute('value', '{}')".format("322255C")
-browser.execute_script(script_button, possible_rooms)
-print(choose_button.get_attribute("value"))
+value = ""
+for i in rooms:
+    string_builder_room = '//*[@title="' + i + '"' + "]"
+    try:
+        room = browser.find_element_by_xpath(string_builder_room)
+        value = i
+        break
+    except NoSuchElementException:
+        pass
+string_builder_choose = "//input[@name='room[]' and @value='" + value + "']"
+try:
+    choose_button = browser.find_element_by_xpath(string_builder_choose)
+    choose_button.click()
+except NoSuchElementException:
+    print("Favorite rooms not avaiable")
+    raise
+
+submit_btn = browser.find_element_by_xpath("//input[@type='submit']")
+submit_btn.click()
+
+desc_input = browser.find_element_by_id("name")
+desc_input.click()
+desc_input.send_keys("jobbe as")
+
+confirm_btn = browser.find_element_by_css_selector(".button.button--primary-green.button--block")
+confirm_btn.click()
+
