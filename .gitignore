@@ -22,5 +22,9 @@ pip-selfcheck.json
 !.vscode/launch.json
 !.vscode/extensions.json
 
+###binaries
+script_evening.pyc
+script_morning.pyc
+
 
 # End of https://www.gitignore.io/api/virtualenv,visualstudiocode
