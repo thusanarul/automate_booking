@@ -3,10 +3,12 @@ from selenium.webdriver.common.keys import Keys
 from datetime import datetime
 from datetime import timedelta
 from selenium.common.exceptions import NoSuchElementException
+from mail_script import send_mail
+import os, sys
 
 
-def job_evening():
-    browser = webdriver.Chrome("/home/thusan/Downloads/chromedriver")
+def job_evening(usrname, passwd, email, email_pwd):
+    browser = webdriver.Chrome(os.path.join(sys.path[0], "chromedriver"))
     now = datetime.now()
     booking_date = now + timedelta(days=14)
     # "R30", "R80", "Sentralbygg 2 S22", "Sentralbygg 2 S23", "Sentralbygg 2 S24", "Elektro E/F EL23"
@@ -20,13 +22,13 @@ def job_evening():
 
     usr_name = browser.find_element_by_id("username")
     password = browser.find_element_by_id("password")
-    usr_name.send_keys("piruthua")
-    password.send_keys("")
+    usr_name.send_keys(usrname)
+    password.send_keys(passwd)
     password.send_keys(Keys.ENTER)
 
 
     date_picker = browser.find_element_by_id("preset_date")
-    string_date = str(booking_date.year) + "-" + str(booking_date.month) + "-" + str(booking_date.day)
+    string_date = str(booking_date.day) + "." + str(booking_date.month) +  "." + str(booking_date.year)
     script_string = "arguments[0].setAttribute('value', '{}')".format(string_date)
     browser.execute_script(script_string, date_picker)
 
@@ -83,5 +85,10 @@ def job_evening():
 
     confirm_btn = browser.find_element_by_css_selector(".button.button--primary-green.button--block")
     confirm_btn.click()
+
+    string_builder_conf_room = "//span[@title='" + value + "']" + "//a[@target='_blank']"
+    confirmed_room = browser.find_element_by_xpath(string_builder_conf_room).text
+
+    send_mail(confirmed_room, "12:00-16:00", email, email_pwd)
 
     browser.close()

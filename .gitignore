@@ -21,10 +21,14 @@ pip-selfcheck.json
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+.vscode
 
 ###binaries
 script_evening.pyc
 script_morning.pyc
+mail_script.pyc
+
+passwords.txt
 
 
 # End of https://www.gitignore.io/api/virtualenv,visualstudiocode
